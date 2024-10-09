@@ -27,9 +27,24 @@ class TicTacToe:
             btn["text"] = self.player  # Set the text to the current player ("X" or "O")
             # Toggle between players
             self.player = 'O' if self.player == 'X' else 'X'
+        self.game_over()
 
+  #TODO: Game over results
+  def game_over(self):
 
+    # iterate over the same line
+    for row in range(3):
+      print(row)
+      if self.buttons[(row,0)]["text"] == self.buttons[(row,1)]["text"] == self.buttons[(row,2)]["text"] != "":
+       print("Game Over")
+    
+   
+
+        
+     
+  
 
 if __name__ == '__main__':
   game = TicTacToe()
+  
   
