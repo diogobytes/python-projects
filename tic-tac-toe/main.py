@@ -13,6 +13,7 @@ class TicTacToe:
     self.root.title("Tic-Tac-Toe Game")
     self.player = 'X'
     self.buttons = {}
+    self.center_window(self.root)
     self.create_grid(self.root)
     self.root.mainloop()
     
@@ -20,7 +21,7 @@ class TicTacToe:
     for row in range(GRID_SIZE):
       for col in range(GRID_SIZE):
         #test =  random.choice(self.moves)
-        btn = Button(root, text="", font="normal 20 bold", width=5, height=2,
+        btn = Button(root, text="", font="normal 20 bold", width=2, height=2,
                              command=lambda r=row, c=col: self.on_button_click(r, c))
         btn.grid(row=row, column=col)
         self.buttons[(row, col)] = btn  # Store button reference for each position
@@ -33,10 +34,20 @@ class TicTacToe:
                self.winners_msg(f"The winner is {self.player}")
             # Toggle between players
             self.player = PLAYER_O if self.player == PLAYER_X else PLAYER_X
-        
+  
+  def center_window(self,window):
+      window.update_idletasks()
+      width = window.winfo_width()
+      height = window.winfo_height()
+      screen_width = window.winfo_screenwidth()
+      screen_height = window.winfo_screenheight()
+      x = (screen_width - width) // 2
+      y = (screen_height - height) // 2
+      window.geometry(f"{width}x{height}+{x}+{y}")
 
   def winners_msg(self, msg):
       popup = Toplevel(self.root)
+      self.center_window(popup)
       popup.wm_title("Game Over!")
       label = Label(popup, text=msg, font=NORM_FONT)
       label.pack(side="top", fill="x", pady=10)
@@ -55,13 +66,15 @@ class TicTacToe:
     # iterate over the cols
     if all(self.buttons[(row,c)]["text"] == self.player for c in range(GRID_SIZE)):
         return True
-
+    # left diagonal
     if all( row == col and self.buttons[(i,i)]["text"] == self.player for i in range(GRID_SIZE)):
        return True 
-    
+    #TODO: right diagonal
+
+    return False
       
 
 if __name__ == '__main__':
-  game = TicTacToe()
+  TicTacToe()
   
   
