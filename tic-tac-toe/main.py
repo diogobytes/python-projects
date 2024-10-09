@@ -2,6 +2,7 @@
 
 from tkinter import *
 import random
+NORM_FONT = ("Helvetica", 10)
 class TicTacToe:
 
   def __init__(self):
@@ -11,6 +12,8 @@ class TicTacToe:
     self.buttons = {}
     self.create_grid(root)
     root.mainloop()
+    
+
 
   def create_grid(self,root):
     for row in range(3):
@@ -29,20 +32,35 @@ class TicTacToe:
             self.player = 'O' if self.player == 'X' else 'X'
         self.game_over()
 
+  def winners_msg(self,msg):
+    popup = Tk()
+    popup.wm_title("Game over!")
+    label = Label(popup, text=msg, font=NORM_FONT)
+    label.pack(side="top", fill="x", pady=10)
+    B1 = Button(popup, text="Ok", command = popup.destroy)
+    B1.pack()
+    popup.mainloop()
+
   #TODO: Game over results
   def game_over(self):
-
-    # iterate over the same line
+    msg = f"The Winner is "
+    # iterate over the rows
     for row in range(3):
-      print(row)
       if self.buttons[(row,0)]["text"] == self.buttons[(row,1)]["text"] == self.buttons[(row,2)]["text"] != "":
-       print("Game Over")
-    
-   
-
-        
-     
-  
+        winner = self.buttons[(row,0)]["text"]
+        self.winners_msg(msg + winner)
+    # iterate over the cols
+    for col in range(3):
+      if self.buttons[(0,col)]["text"] == self.buttons[(1,col)]["text"] == self.buttons[(2,col)]["text"] != "":
+        winner = self.buttons[(0,col)]["text"]
+        self.winners_msg(msg + winner)
+    if self.buttons[(0,0)]["text"] == self.buttons[(1,1)]["text"] == self.buttons[(2,2)]["text"] != "":
+      winner = self.buttons[(0,0)]["text"]
+      self.winners_msg(msg + winner)
+    if self.buttons[(0,2)]["text"] == self.buttons[(1,1)]["text"] == self.buttons[(2,0)]["text"] != "":
+      winner = self.buttons[(0,2)]["text"]     
+      self.winners_msg(msg + winner)
+      
 
 if __name__ == '__main__':
   game = TicTacToe()
