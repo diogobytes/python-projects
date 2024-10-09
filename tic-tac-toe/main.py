@@ -1,23 +1,24 @@
 # Tic tac toe game
 
 from tkinter import *
-import random
+
+PLAYER_X = "X"
+PLAYER_O = "O"
 NORM_FONT = ("Helvetica", 10)
+GRID_SIZE = 3
 class TicTacToe:
 
   def __init__(self):
-    root = Tk()
-    root.title("Tic-Tac-Toe Game")
+    self.root = Tk()
+    self.root.title("Tic-Tac-Toe Game")
     self.player = 'X'
     self.buttons = {}
-    self.create_grid(root)
-    root.mainloop()
+    self.create_grid(self.root)
+    self.root.mainloop()
     
-
-
   def create_grid(self,root):
-    for row in range(3):
-      for col in range(3):
+    for row in range(GRID_SIZE):
+      for col in range(GRID_SIZE):
         #test =  random.choice(self.moves)
         btn = Button(root, text="", font="normal 20 bold", width=5, height=2,
                              command=lambda r=row, c=col: self.on_button_click(r, c))
@@ -28,38 +29,36 @@ class TicTacToe:
         btn = self.buttons[(row, col)]  # Get the button clicked
         if btn["text"] == "":  # If the button is not already clicked
             btn["text"] = self.player  # Set the text to the current player ("X" or "O")
+            if self.check_winner(row,col):
+               self.winners_msg(f"The winner is {self.player}")
             # Toggle between players
-            self.player = 'O' if self.player == 'X' else 'X'
-        self.game_over()
+            self.player = PLAYER_O if self.player == PLAYER_X else PLAYER_X
+        
 
-  def winners_msg(self,msg):
-    popup = Tk()
-    popup.wm_title("Game over!")
-    label = Label(popup, text=msg, font=NORM_FONT)
-    label.pack(side="top", fill="x", pady=10)
-    B1 = Button(popup, text="Ok", command = popup.destroy)
-    B1.pack()
-    popup.mainloop()
+  def winners_msg(self, msg):
+      popup = Toplevel(self.root)
+      popup.wm_title("Game Over!")
+      label = Label(popup, text=msg, font=NORM_FONT)
+      label.pack(side="top", fill="x", pady=10)
+      B1 = Button(popup, text="Play Again", command=lambda: [self.reset_game(), popup.destroy()])
+      B1.pack()
+
+  def reset_game(self):
+     print("Reset game")
 
   #TODO: Game over results
-  def game_over(self):
-    msg = f"The Winner is "
+  def check_winner(self,row,col):
+    print(row,col)
     # iterate over the rows
-    for row in range(3):
-      if self.buttons[(row,0)]["text"] == self.buttons[(row,1)]["text"] == self.buttons[(row,2)]["text"] != "":
-        winner = self.buttons[(row,0)]["text"]
-        self.winners_msg(msg + winner)
+    if all(self.buttons[(r,col)]["text"] == self.player for r in range(GRID_SIZE)):
+      return True
     # iterate over the cols
-    for col in range(3):
-      if self.buttons[(0,col)]["text"] == self.buttons[(1,col)]["text"] == self.buttons[(2,col)]["text"] != "":
-        winner = self.buttons[(0,col)]["text"]
-        self.winners_msg(msg + winner)
-    if self.buttons[(0,0)]["text"] == self.buttons[(1,1)]["text"] == self.buttons[(2,2)]["text"] != "":
-      winner = self.buttons[(0,0)]["text"]
-      self.winners_msg(msg + winner)
-    if self.buttons[(0,2)]["text"] == self.buttons[(1,1)]["text"] == self.buttons[(2,0)]["text"] != "":
-      winner = self.buttons[(0,2)]["text"]     
-      self.winners_msg(msg + winner)
+    if all(self.buttons[(row,c)]["text"] == self.player for c in range(GRID_SIZE)):
+        return True
+
+    if all( row == col and self.buttons[(i,i)]["text"] == self.player for i in range(GRID_SIZE)):
+       return True 
+    
       
 
 if __name__ == '__main__':
