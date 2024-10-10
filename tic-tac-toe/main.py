@@ -70,7 +70,8 @@ class TicTacToe:
     if all( row == col and self.buttons[(i,i)]["text"] == self.player for i in range(GRID_SIZE)):
        return True 
     #TODO: right diagonal
-
+    if all(self.buttons[(i, GRID_SIZE-1-i)]["text"] == self.player for i in range(GRID_SIZE)):
+      return True
     return False
       
 
