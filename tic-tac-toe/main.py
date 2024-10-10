@@ -13,6 +13,8 @@ class TicTacToe:
     self.root.title("Tic-Tac-Toe Game")
     self.player = 'X'
     self.buttons = {}
+    self.moves_made = 0
+    self.game_over = False
     self.center_window(self.root)
     self.create_grid(self.root)
     self.root.mainloop()
@@ -27,11 +29,18 @@ class TicTacToe:
         self.buttons[(row, col)] = btn  # Store button reference for each position
   
   def on_button_click(self, row, col):
+        if self.game_over:
+          return
         btn = self.buttons[(row, col)]  # Get the button clicked
         if btn["text"] == "":  # If the button is not already clicked
             btn["text"] = self.player  # Set the text to the current player ("X" or "O")
+            self.moves_made += 1 # Increment move count
             if self.check_winner(row,col):
                self.winners_msg(f"The winner is {self.player}")
+               self.game_over = True
+            elif self.moves_made == GRID_SIZE * GRID_SIZE:
+              self.winners_msg(f"It's a draw!")
+              self.game_over = True
             # Toggle between players
             self.player = PLAYER_O if self.player == PLAYER_X else PLAYER_X
   
@@ -57,6 +66,7 @@ class TicTacToe:
   def reset_game(self):
      self.buttons = {}
      self.player = 'X'
+     self.game_over = False
      self.create_grid(self.root)
      self.center_window(self.root)
 
