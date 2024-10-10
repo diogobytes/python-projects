@@ -55,7 +55,10 @@ class TicTacToe:
       B1.pack()
 
   def reset_game(self):
-     print("Reset game")
+     self.buttons = {}
+     self.player = 'X'
+     self.create_grid(self.root)
+     self.center_window(self.root)
 
   #TODO: Game over results
   def check_winner(self,row,col):
