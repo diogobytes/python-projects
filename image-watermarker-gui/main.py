@@ -1,0 +1,1 @@
+# Desktop  Application with a GUI where you can upload an image and use python to add a watermark logo/text.
