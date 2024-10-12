@@ -1,36 +1,43 @@
-# Desktop  Application with a GUI where you can upload an image and use python to add a watermark logo/text.
-
-# https://pypi.org/project/Pillow/
-#https://docs.python.org/3/library/tkinter.html
-
-from PIL import Image,ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont
 from tkinter import *
 
-
 class WatermarkApp:
-  def __init__(self):
-    self.root = Tk()
-    self.root.title("Window Marker App")
-    self.root.geometry('300x300')
-    # Main frame
-    self.mainframe = Frame(self.root,bg="white")
-    self.mainframe.grid(column=0,row=0,stick="nsew",padx=10,pady=10)
-    self.label = Label(self.mainframe, text="Upload your image file", font=("Arial", 14))
-    self.label.grid(row=1,column=0)
-    self.root.mainloop()
-    
+    def __init__(self):
+        self.root = Tk()
+        self.root.title("Window Marker App")
+        self.root.geometry('300x150')
 
+        self.home_page()
+        # Configure the grid to keep the label at the top
+        self.root.grid_rowconfigure(0, weight=1)
+        self.root.grid_columnconfigure(0, weight=1)
+
+        self.root.mainloop()
+
+    def home_page(self):
+        # Main frame
+        self.mainframe = Frame(self.root)
+        self.mainframe.grid(column=0, row=0, padx=10, pady=10, sticky="nsew")
+        self.mainframe.grid_rowconfigure(1, weight=0)  # Set weight to 0 to avoid stretching downwards
+        self.mainframe.grid_columnconfigure(0, weight=1)
+        # Label positioned at the top
+        self.label = Label(self.mainframe, text="Add Watermark", font=("Arial", 14))
+        self.label.grid(row=1, column=0, sticky="n")  # Align label to the top with padding
+
+        self.button = Button(self.mainframe,text="Upload your image file",command=self.watermark_page)
+        self.button.grid(row=3,column=0)
+        #TODO: we need Continue button after the file has been uploaded.
+
+    def watermark_page(self):
+      self.watermark_page_mainframe = Frame(self.root)
+      self.watermark_page_mainframe.grid(column=0, row=0, padx=10, pady=10, sticky="nsew")
+      self.watermark_page_mainframe.grid_rowconfigure(1, weight=0)  # Set weight to 0 to avoid stretching downwards
+      self.watermark_page_mainframe.grid_columnconfigure(0, weight=1)
+
+      self.label_watermark = Label(self.watermark_page_mainframe,text="Insert the text you want to watermark",font=("Arial",14))
+      self.label_watermark.grid(row=1,column=0,sticky='n')
+      self.input_field = Entry(self.watermark_page_mainframe,)
 
 
 if __name__ == '__main__':
-  watermark_gui = WatermarkApp()
-  
-  
-  # im = Image.open('./matrix.jpg')
-  # watermark_im = im.copy()
-  # fnt = ImageFont.truetype("./Arial.ttf", 40)
-
-  # draw = ImageDraw.Draw(watermark_im)
-  # draw.text((0,0),"Diogo Guedes",fill=(0, 0, 0, 0),font=fnt)
-  # watermark_im.show()
-
+    watermark_gui = WatermarkApp()
