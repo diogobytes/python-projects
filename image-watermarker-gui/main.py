@@ -5,7 +5,21 @@ class WatermarkApp:
     def __init__(self):
         self.root = Tk()
         self.root.title("Window Marker App")
-        self.root.geometry('300x150')
+     
+        # Set initial window size
+        window_width = 300
+        window_height = 150
+
+        # Get the screen width and height
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+
+        # Calculate the center position
+        center_x = int(screen_width/2 - window_width/2)
+        center_y = int(screen_height/2 - window_height/2)
+
+        # Set the window size and position it at the center
+        self.root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
 
         self.home_page()
         # Configure the grid to keep the label at the top
@@ -37,7 +51,7 @@ class WatermarkApp:
       self.label_watermark = Label(self.watermark_page_mainframe, text="Insert the text you want to watermark", font=("Arial", 14))
       self.label_watermark.grid(row=1, column=0, sticky='n', pady=(0, 10))  # Add padding to separate label from the input field
 
-      self.input_field = Entry(self.watermark_page_mainframe, font=('Arial', 14))
+      self.input_field = Entry(self.watermark_page_mainframe, font=('Arial', 14),background="white",foreground="black")
       self.input_field.grid(row=2, column=0, sticky='n', padx=10, pady=10)  # Ensure padding and stickiness
 
       # Add a button to continue after entering text
