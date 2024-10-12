@@ -24,9 +24,9 @@ class WatermarkApp:
         self.label = Label(self.mainframe, text="Add Watermark", font=("Arial", 14))
         self.label.grid(row=1, column=0, sticky="n")  # Align label to the top with padding
 
-        self.button = Button(self.mainframe,text="Upload your image file",command=self.watermark_page)
-        self.button.grid(row=3,column=0)
-        #TODO: we need Continue button after the file has been uploaded.
+        self.button = Button(self.mainframe, text="Upload your image file", command=self.watermark_page)
+        self.button.grid(row=3, column=0)
+        # TODO: we need Continue button after the file has been uploaded.
 
     def watermark_page(self):
       self.watermark_page_mainframe = Frame(self.root)
@@ -34,9 +34,15 @@ class WatermarkApp:
       self.watermark_page_mainframe.grid_rowconfigure(1, weight=0)  # Set weight to 0 to avoid stretching downwards
       self.watermark_page_mainframe.grid_columnconfigure(0, weight=1)
 
-      self.label_watermark = Label(self.watermark_page_mainframe,text="Insert the text you want to watermark",font=("Arial",14))
-      self.label_watermark.grid(row=1,column=0,sticky='n')
-      self.input_field = Entry(self.watermark_page_mainframe,)
+      self.label_watermark = Label(self.watermark_page_mainframe, text="Insert the text you want to watermark", font=("Arial", 14))
+      self.label_watermark.grid(row=1, column=0, sticky='n', pady=(0, 10))  # Add padding to separate label from the input field
+
+      self.input_field = Entry(self.watermark_page_mainframe, font=('Arial', 14))
+      self.input_field.grid(row=2, column=0, sticky='n', padx=10, pady=10)  # Ensure padding and stickiness
+
+      # Add a button to continue after entering text
+      self.continue_button = Button(self.watermark_page_mainframe, text="Continue")
+      self.continue_button.grid(row=3, column=0, pady=10, sticky='n')  # Add continue button with padding
 
 
 if __name__ == '__main__':
