@@ -28,8 +28,8 @@ class WatermarkApp:
         self.mainframe.grid_rowconfigure(1, weight=0)
         self.mainframe.grid_columnconfigure(0, weight=1)
 
-        self.label = Label(self.mainframe, text="Add Watermark", font=("Arial", 14))
-        self.label.grid(row=1, column=0, sticky="n")
+        self.label_homepage = Label(self.mainframe, text="Add Watermark", font=("Arial", 14))
+        self.label_homepage.grid(row=1, column=0, sticky="n")
         
         self.button = Button(self.mainframe, text="Upload your image file", command=self.upload_image)
         self.button.grid(row=3, column=0)
@@ -69,13 +69,22 @@ class WatermarkApp:
         self.coordenate_y_field = Entry(self.mainframe, font=('Arial', 14))
         self.coordenate_y_field.grid(row=2, column=1, sticky='n', pady=(0, 10))
 
-        self.apply_button = Button(self.mainframe, text="Apply Watermark") #command=self.apply_watermark)
+        self.apply_button = Button(self.mainframe, text="Apply Watermark",command=self.apply_watermark)
         self.apply_button.grid(row=3, column=0, columnspan=2, pady=10)
 
+    def apply_watermark(self):
+      im = Image.open(self.filepath)
+      watermark_im = im.copy()
+      fnt = ImageFont.truetype("./Arial.ttf", 40)
+      draw = ImageDraw.Draw(watermark_im)
+      draw.text((0,0),self.text_field.get(),fill=(0, 0, 0, 0),font=fnt)
+      watermark_im.show()
+    
     def clear_frame(self): 
       # Iterate through every widget inside the frame
       for widget in self.mainframe.winfo_children():
           widget.destroy()  # deleting widget
+
 
 if __name__ == '__main__':
     WatermarkApp()
