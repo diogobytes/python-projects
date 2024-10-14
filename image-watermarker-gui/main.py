@@ -37,6 +37,7 @@ class WatermarkApp:
     def upload_image(self):
         self.filepath = filedialog.askopenfilename(
             title="Select an Image",
+            filetypes=[("PNG","*.png"),("JPG","*.jpg"),("JPEG","*.jpeg"),("ICON","*.ico")]
         )
         if not self.filepath:
             messagebox.showwarning("File not selected", "Please upload an image file!")
@@ -44,6 +45,7 @@ class WatermarkApp:
             self.watermark_page()
 
     def watermark_page(self):
+        self.clear_frame()
         self.label_watermark = Label(self.mainframe, text="Insert the text you want to watermark", font=("Arial", 14))
         self.label_watermark.grid(row=1, column=0, sticky='n', pady=(0, 10))
 
@@ -54,7 +56,7 @@ class WatermarkApp:
         self.continue_button.grid(row=3, column=0, pady=10, sticky='n')
 
     def location_page(self):
-
+        self.clear_frame()
         self.label_coordenate_x = Label(self.mainframe, text="Coordinate X:")
         self.label_coordenate_x.grid(row=1, column=0, sticky='n', pady=(0, 10))
 
@@ -70,7 +72,10 @@ class WatermarkApp:
         self.apply_button = Button(self.mainframe, text="Apply Watermark") #command=self.apply_watermark)
         self.apply_button.grid(row=3, column=0, columnspan=2, pady=10)
 
-
+    def clear_frame(self): 
+      # Iterate through every widget inside the frame
+      for widget in self.mainframe.winfo_children():
+          widget.destroy()  # deleting widget
 
 if __name__ == '__main__':
     WatermarkApp()
