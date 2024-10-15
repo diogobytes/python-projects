@@ -1,7 +1,6 @@
-from PIL import Image, ImageDraw, ImageFont
+import PIL.Image,PIL.ImageFont,PIL.ImageDraw
 from tkinter import *
 from tkinter import filedialog, messagebox
-import os
 
 class WatermarkApp:
     def __init__(self):
@@ -43,17 +42,26 @@ class WatermarkApp:
             messagebox.showwarning("File not selected", "Please upload an image file!")
         else:
             self.watermark_page()
-
+    
     def watermark_page(self):
         self.clear_frame()
+
+        # Create new Label and Entry widgets for text input
         self.label_watermark = Label(self.mainframe, text="Insert the text you want to watermark", font=("Arial", 14))
         self.label_watermark.grid(row=1, column=0, sticky='n', pady=(0, 10))
 
         self.text_field = Entry(self.mainframe, font=('Arial', 14))
         self.text_field.grid(row=2, column=0, sticky='n', padx=10, pady=10)
-
-        self.continue_button = Button(self.mainframe, text="Continue", command=self.location_page)
+        
+        # Button to continue to the next step
+        self.continue_button = Button(self.mainframe, text="Continue", command=self.save_text_and_continue)
         self.continue_button.grid(row=3, column=0, pady=10, sticky='n')
+
+        self.watermark_text = self.text_field.get()
+
+    def save_text_and_continue(self):
+        self.watermark_text = self.text_field.get()
+        self.location_page()
 
     def location_page(self):
         self.clear_frame()
@@ -62,24 +70,71 @@ class WatermarkApp:
 
         self.coordenate_x_field = Entry(self.mainframe, font=('Arial', 14))
         self.coordenate_x_field.grid(row=1, column=1, sticky='n', pady=(0, 10))
-
+        self.x_coordenate = self.coordenate_x_field.get()
+        
         self.label_coordenate_y = Label(self.mainframe, text="Coordinate Y:")
         self.label_coordenate_y.grid(row=2, column=0, sticky='n', pady=(0, 10))
 
         self.coordenate_y_field = Entry(self.mainframe, font=('Arial', 14))
         self.coordenate_y_field.grid(row=2, column=1, sticky='n', pady=(0, 10))
+        self.y_coordenate = self.coordenate_x_field.get()
 
         self.apply_button = Button(self.mainframe, text="Apply Watermark",command=self.apply_watermark)
         self.apply_button.grid(row=3, column=0, columnspan=2, pady=10)
 
     def apply_watermark(self):
-      im = Image.open(self.filepath)
-      watermark_im = im.copy()
-      fnt = ImageFont.truetype("./Arial.ttf", 40)
-      draw = ImageDraw.Draw(watermark_im)
-      draw.text((0,0),self.text_field.get(),fill=(0, 0, 0, 0),font=fnt)
-      watermark_im.show()
-    
+        try:
+            # Check if the input fields are valid and contain values
+            x = int(self.coordenate_x_field.get())
+            y = int(self.coordenate_y_field.get())
+            text = self.watermark_text
+          
+
+            if not text:
+                messagebox.showwarning("Input Error", "Please enter the text for the watermark.")
+                return
+
+            # Open the image
+            im = PIL.Image.open(self.filepath)
+            watermark_im = im.copy()
+            
+            # Font for the watermark (adjust the path if necessary)
+            fnt = PIL.ImageFont.truetype("./Arial.ttf", 40)
+            draw = PIL.ImageDraw.Draw(watermark_im)
+            
+            # Add the text as watermark
+            draw.text((x, y), text, fill=(0, 0, 0), font=fnt)
+            
+            # Show the watermarked image
+            watermark_im.show()
+
+        except ValueError:
+            messagebox.showerror("Invalid Input", "Coordinates must be integers.")
+
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+
+    def location_page(self):
+        self.clear_frame()
+        
+        # Coordinate X input
+        self.label_coordenate_x = Label(self.mainframe, text="Coordinate X:")
+        self.label_coordenate_x.grid(row=1, column=0, sticky='n', pady=(0, 10))
+
+        self.coordenate_x_field = Entry(self.mainframe, font=('Arial', 14))  # Reassign widget
+        self.coordenate_x_field.grid(row=1, column=1, sticky='n', pady=(0, 10))
+
+        # Coordinate Y input
+        self.label_coordenate_y = Label(self.mainframe, text="Coordinate Y:")
+        self.label_coordenate_y.grid(row=2, column=0, sticky='n', pady=(0, 10))
+
+        self.coordenate_y_field = Entry(self.mainframe, font=('Arial', 14))  # Reassign widget
+        self.coordenate_y_field.grid(row=2, column=1, sticky='n', pady=(0, 10))
+
+        # Apply watermark button
+        self.apply_button = Button(self.mainframe, text="Apply Watermark", command=self.apply_watermark)
+        self.apply_button.grid(row=3, column=0, columnspan=2, pady=10)
+        
     def clear_frame(self): 
       # Iterate through every widget inside the frame
       for widget in self.mainframe.winfo_children():
