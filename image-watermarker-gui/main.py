@@ -107,7 +107,7 @@ class WatermarkApp:
             
             draw.text((x, y), text, fill=(0, 0, 0), font=fnt)
             watermark_im.show()
-            watermark_im.save("watermarked_image.png")  # Save the watermarked image
+            watermark_im.save("watermarked_image.png")  # Save the watermarked image in the same folder
         except ValueError:
             messagebox.showerror("Invalid Input", "Coordinates must be integers.")
         except Exception as e:
