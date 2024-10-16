@@ -15,11 +15,5 @@ def convert_playlist():
 
 
 
-def main():
-  print("[*] Welcome to ")
-
-
-
-
 if __name__ == '__main__':
   YoutubeConverter()
