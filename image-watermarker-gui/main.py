@@ -9,7 +9,7 @@ class WatermarkApp:
         self.root.title("Window Marker App")
         
         window_width = 300
-        window_height = 400  # Increase height to accommodate image display
+        window_height = 400
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
 
@@ -37,6 +37,9 @@ class WatermarkApp:
         self.image_label = Label(self.mainframe)  # Label to display image
         self.image_label.grid(row=4, column=0, pady=10)
 
+        self.continue_btn_home_page = Button(self.mainframe,text="Continue",command=self.watermark_page)
+        self.continue_btn_home_page.grid(row=7,column=0,pady=10)
+
     def upload_image(self):
         self.filepath = filedialog.askopenfilename(
             title="Select an Image",
@@ -46,7 +49,6 @@ class WatermarkApp:
             messagebox.showwarning("File not selected", "Please upload an image file!")
         else:
             self.show_image()
-            self.watermark_page()
     
     def show_image(self):
         self.image = PIL.Image.open(self.filepath)
@@ -57,18 +59,60 @@ class WatermarkApp:
 
     def watermark_page(self):
         self.clear_frame()
-        
         self.label_watermark = Label(self.mainframe, text="Insert the text you want to watermark", font=("Arial", 14))
         self.label_watermark.grid(row=1, column=0, sticky='n', pady=(0, 10))
     
         self.text_field = Entry(self.mainframe, font=('Arial', 14))
         self.text_field.grid(row=2, column=0, sticky='n', padx=10, pady=10)
+
+        # Add a dropdown for font selection
+        self.label_font = Label(self.mainframe, text="Select Font:", font=("Arial", 12))
+        self.label_font.grid(row=3, column=0, sticky='n', pady=(10, 0))
+
+        self.font_var = StringVar(self.mainframe)
+        self.font_var.set("Arial")  # Default font
+        self.available_fonts = ["Arial", "Roboto", "Times New Roman", "Courier New"]  # Add other fonts as needed
+        self.font_menu = OptionMenu(self.mainframe, self.font_var, *self.available_fonts)
+        self.font_menu.grid(row=4, column=0, pady=10)
+        
+        # Add an input field for font size selection
+        self.label_font_size = Label(self.mainframe, text="Select Font Size:", font=("Arial", 12))
+        self.label_font_size.grid(row=5, column=0, sticky='n', pady=(10, 0))
+
+        self.font_size_var = StringVar(self.mainframe)
+        self.font_size_var.set("40")
+        self.font_size_field = Entry(self.mainframe,text="Select Font Size: ",font=("Arial",12))
+        self.font_size_field.grid(row=6, column=0, sticky='n', pady=(10, 0))
+
         
         self.continue_button = Button(self.mainframe, text="Continue", command=self.save_text_and_continue)
-        self.continue_button.grid(row=3, column=0, pady=10, sticky='n')
+        self.continue_button.grid(row=9, column=0, pady=10, sticky='n')
+        
 
     def save_text_and_continue(self):
+        # Get the watermark text
         self.watermark_text = self.text_field.get()
+        
+        # Validate input
+        error_messages = []
+        
+        # Check if watermark text is empty
+        if not self.watermark_text:
+            error_messages.append("Watermark text cannot be empty.")
+        
+        # Check if font size is numeric
+        if not self.font_size_field.get().isdigit():
+            error_messages.append("Font size must be numeric.")
+        else:
+            self.font_size = int(self.font_size_field.get())
+        
+        # Check if there are any error messages
+        if error_messages:
+            messagebox.showwarning("Input Error", "\n".join(error_messages))
+            return  # Return early if there are errors
+
+        # If all validations passed, proceed to get the font and navigate to the next page
+        self.get_font = self.get_font_path(self.font_var.get())
         self.location_page()
 
     def location_page(self):
@@ -89,6 +133,15 @@ class WatermarkApp:
         self.apply_button = Button(self.mainframe, text="Apply Watermark", command=self.apply_watermark)
         self.apply_button.grid(row=3, column=0, columnspan=2, pady=10)
 
+    def get_font_path(self,font_name):
+        """Return the path to the font file based on the selected font."""
+        font_paths = {
+            "Arial" : "./Arial.ttf",
+            "Roboto": "./Roboto-Regular.ttf",
+            "Times New Roman": "./TimesNewRoman.ttf",
+            "Courier New": "./CourierNew.ttf"
+        }
+        return font_paths.get(font_name,"./Arial.ttf")
     def apply_watermark(self):
         try:
             x = int(self.coordinate_x_field.get())
@@ -102,12 +155,16 @@ class WatermarkApp:
             im = PIL.Image.open(self.filepath)
             watermark_im = im.copy()
             
-            fnt = PIL.ImageFont.truetype("./Arial.ttf", 40)
             draw = PIL.ImageDraw.Draw(watermark_im)
-            
+            try:
+                fnt = PIL.ImageFont.truetype(self.get_font,self.font_size)
+            except:
+                messagebox.showerror("Error",f"Font {self.get_font} not found!")  
             draw.text((x, y), text, fill=(0, 0, 0), font=fnt)
             watermark_im.show()
             watermark_im.save("watermarked_image.png")  # Save the watermarked image in the same folder
+            messagebox.showinfo("Success","Watermark applied and image saved as 'watermarked_image.png'")
+            self.root.quit()
         except ValueError:
             messagebox.showerror("Invalid Input", "Coordinates must be integers.")
         except Exception as e:
