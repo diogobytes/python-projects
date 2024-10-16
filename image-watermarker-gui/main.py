@@ -17,6 +17,7 @@ class WatermarkApp:
         center_y = int(screen_height / 2 - window_height / 2)
 
         self.root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+        self.page_stack = []
         self.home_page()
         self.root.grid_rowconfigure(0, weight=1) 
         self.root.grid_columnconfigure(0, weight=1)
@@ -37,9 +38,23 @@ class WatermarkApp:
         self.image_label = Label(self.mainframe)  # Label to display image
         self.image_label.grid(row=4, column=0, pady=10)
 
-        self.continue_btn_home_page = Button(self.mainframe,text="Continue",command=self.watermark_page)
+        self.page_stack.append(self.home_page)
+        self.continue_btn_home_page = Button(self.mainframe,text="Continue",command=lambda: self.show_frame(self.watermark_page))
         self.continue_btn_home_page.grid(row=7,column=0,pady=10)
 
+    def show_frame(self,page_func):
+        self.page_stack.append(page_func)
+        self.clear_frame()
+        page_func()
+
+    def go_back(self):
+        if len(self.page_stack) > 1:
+            self.clear_frame()
+            self.page_stack.pop()  # Remove current page
+            self.page_stack[-1]()  # Show the previous page
+        else:
+            messagebox.showwarning("Navigation Error", "No more pages to go back to.")
+      
     def upload_image(self):
         self.filepath = filedialog.askopenfilename(
             title="Select an Image",
@@ -58,7 +73,6 @@ class WatermarkApp:
         self.image_label.image = self.photo  # Keep a reference to avoid garbage collection
 
     def watermark_page(self):
-        self.clear_frame()
         self.label_watermark = Label(self.mainframe, text="Insert the text you want to watermark", font=("Arial", 14))
         self.label_watermark.grid(row=1, column=0, sticky='n', pady=(0, 10))
     
@@ -79,16 +93,17 @@ class WatermarkApp:
         self.label_font_size = Label(self.mainframe, text="Select Font Size:", font=("Arial", 12))
         self.label_font_size.grid(row=5, column=0, sticky='n', pady=(10, 0))
 
-        self.font_size_var = StringVar(self.mainframe)
-        self.font_size_var.set("40")
-        self.font_size_field = Entry(self.mainframe,text="Select Font Size: ",font=("Arial",12))
+        self.font_size_var = StringVar(self.mainframe, value="40")  # Set default size
+        self.font_size_field = Entry(self.mainframe, textvariable=self.font_size_var, font=("Arial", 12))
         self.font_size_field.grid(row=6, column=0, sticky='n', pady=(10, 0))
 
         
         self.continue_button = Button(self.mainframe, text="Continue", command=self.save_text_and_continue)
         self.continue_button.grid(row=9, column=0, pady=10, sticky='n')
-        
 
+        self.back_button = Button(self.mainframe, text="Back", command=self.go_back)
+        self.back_button.grid(row=10, column=0, pady=10, sticky="n")
+        
     def save_text_and_continue(self):
         # Get the watermark text
         self.watermark_text = self.text_field.get()
@@ -113,10 +128,9 @@ class WatermarkApp:
 
         # If all validations passed, proceed to get the font and navigate to the next page
         self.get_font = self.get_font_path(self.font_var.get())
-        self.location_page()
+        self.show_frame(self.location_page)
 
     def location_page(self):
-        self.clear_frame()
         
         self.label_coordinate_x = Label(self.mainframe, text="Coordinate X:")
         self.label_coordinate_x.grid(row=1, column=0, sticky='n', pady=(0, 10))
@@ -132,6 +146,9 @@ class WatermarkApp:
 
         self.apply_button = Button(self.mainframe, text="Apply Watermark", command=self.apply_watermark)
         self.apply_button.grid(row=3, column=0, columnspan=2, pady=10)
+
+        self.back_button = Button(self.mainframe, text="Back", command=self.go_back)
+        self.back_button.grid(row=4, column=0, pady=10, columnspan=2 , sticky="n")
 
     def get_font_path(self,font_name):
         """Return the path to the font file based on the selected font."""
