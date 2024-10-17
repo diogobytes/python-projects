@@ -3,7 +3,9 @@ import ssl
 import os
 import yt_dlp 
 """
-Usage: python3 youtube-converter.py {--playlist} {--link}"
+Usage: python3 youtube-converter.py  {--link}"
+
+You can also add a playlist link.
 """
 
 """
@@ -20,10 +22,8 @@ class YoutubeConverter:
     print("[*] Welcome to Youtube Converter to MP3")
     ssl._create_default_https_context = ssl._create_stdlib_context
     if len(sys.argv) == 1:
-      print("[*] Usage: python3 youtube-converter.py {--playlist} {--link}")
+      print("[*] Usage: python3 youtube-converter.py  {--link}")
     else:
-      if sys.argv[1] == '--playlist':
-        print("Playlist")
       if sys.argv[1] == '--link':
         self.convert_link(sys.argv[2])
       else: 
@@ -42,6 +42,5 @@ class YoutubeConverter:
       
     except Exception as e:
       print(f"Error {e}")
-
 if __name__ == '__main__':
   YoutubeConverter()
