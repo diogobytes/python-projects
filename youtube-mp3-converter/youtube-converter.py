@@ -20,9 +20,6 @@ class YoutubeConverter:
     ssl._create_default_https_context = ssl._create_stdlib_context
     self.parse_arguments()
 
-
-  
-
   def parse_arguments(self):
     parser = argparse.ArgumentParser(description="A command line tool to convert Youtube videos to MP3",epilog="Example: youtube-converter.py --link <Youtube Link>")
     parser.add_argument('--link',type=str,help='Youtube video or playlist link to convert',required=True)
