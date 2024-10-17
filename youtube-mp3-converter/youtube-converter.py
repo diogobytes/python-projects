@@ -1,7 +1,7 @@
 import sys
-from pytube import YouTube
-import ffmpeg
 import ssl
+import os
+import yt_dlp 
 """
 Usage: python3 youtube-converter.py {--playlist} {--link}"
 """
@@ -23,20 +23,20 @@ class YoutubeConverter:
         print("Error: provide a valid argument")
   def convert_link(self,link):
     try:
-      yt_download = YouTube(link)
-      audio_streams = yt_download.streams.filter(only_audio=True)
-      if not audio_streams:
-        print("Error: no audio from youtube video.")
-        return
+      ydl_opts = {
+        'format': 'm4a/bestaudio/best',
+        # ℹ️ See help(yt_dlp.postprocessor) for a list of available Postprocessors and their arguments
+        'postprocessors': [{  # Extract audio using ffmpeg
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'm4a',
+        } ]
+      }
+
+      with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        error_code = ydl.download(link)
+      
     except Exception as e:
       print(f"Error {e}")
-      
-   
-
-  def convert_playlist(self):
-    print
-
-
 
 if __name__ == '__main__':
   YoutubeConverter()
