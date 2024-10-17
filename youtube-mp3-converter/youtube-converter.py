@@ -1,19 +1,16 @@
 import sys
 import ssl
-import os
 import yt_dlp 
+import argparse
+
 """
-Usage: python3 youtube-converter.py  {--link}"
+Usage: python3 youtube-converter.py --link <link> [--help]
 
 You can also add a playlist link.
-"""
 
-"""
 Prequisites: FFmpeg and yt_dlp
-
-`brew install ffmpeg`
-
-`pip3 install yt-dlp`
+- `brew install ffmpeg`
+- `pip3 install yt-dlp`
 """
 
 class YoutubeConverter:
@@ -21,13 +18,23 @@ class YoutubeConverter:
   def __init__(self):
     print("[*] Welcome to Youtube Converter to MP3")
     ssl._create_default_https_context = ssl._create_stdlib_context
-    if len(sys.argv) == 1:
-      print("[*] Usage: python3 youtube-converter.py  {--link}")
-    else:
-      if sys.argv[1] == '--link':
-        self.convert_link(sys.argv[2])
-      else: 
-        print("Error: provide a valid argument")
+    self.parse_arguments()
+
+
+  
+
+  def parse_arguments(self):
+    parser = argparse.ArgumentParser(description="A command line tool to convert Youtube videos to MP3",epilog="Example: youtube-converter.py --link <Youtube Link>")
+    parser.add_argument('--link',type=str,help='Youtube video or playlist link to convert',required=True)
+    parser.add_argument('-v','--version',action='version',version='YoutubeConverter 1.0')
+
+    args = parser.parse_args()
+
+    if args.link:
+      self.convert_link(args.link)
+    else: 
+      print("[*] Use --help for more information")
+
   def convert_link(self,link):
     try:
       ydl_opts = {
