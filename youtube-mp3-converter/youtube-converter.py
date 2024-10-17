@@ -6,6 +6,13 @@ import yt_dlp
 Usage: python3 youtube-converter.py {--playlist} {--link}"
 """
 
+"""
+Prequisites: FFmpeg and yt_dlp
+
+`brew install ffmpeg`
+
+`pip3 install yt-dlp`
+"""
 
 class YoutubeConverter:
   
@@ -28,12 +35,11 @@ class YoutubeConverter:
         # ℹ️ See help(yt_dlp.postprocessor) for a list of available Postprocessors and their arguments
         'postprocessors': [{  # Extract audio using ffmpeg
             'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'm4a',
+            'preferredcodec': 'mp3',
         } ]
       }
-
       with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        error_code = ydl.download(link)
+        ydl.download(link)
       
     except Exception as e:
       print(f"Error {e}")
