@@ -2,7 +2,7 @@
 
 ## A command line tool to convert YouTube videos to MP3
 
-#Usage
+## Usage
 
 ```bash
 $ python3 youtube-converter.py --help
