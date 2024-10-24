@@ -1,35 +1,36 @@
-# This project is to create a bot to play the Google Dino Game!
-# Play here: https://elgoog.im/dinosaur-game/
-
-# Documentation
-#https://pypi.org/project/Pillow/
-#https://pyautogui.readthedocs.io/en/latest/
-
 import pyautogui
 import webbrowser
 import time
-from PIL import Image, ImageChops
+from PIL import Image
 
 URL = "https://elgoog.im/dinosaur-game/"
 
 def is_obstacle_present():
-  game_region = pyautogui.screenshot(region=(600,150,300,200))
-  obstacle_image = Image.open('./image.png')
-  diff = ImageChops.difference(game_region,obstacle_image)
-  if diff.getbbox() is None:
-    return False
-  else: 
-    return True
+    # Capture a screenshot of the game region
+    game_region = pyautogui.screenshot(region=(800, 550, 430, 300))
+    # Convert the screenshot to a format we can manipulate (Pillow Image)
+    game_region = game_region.convert('RGB')
+
+    # Check multiple pixels within the screenshot for color changes
+    for x in range(420, 430, 1):  # Check pixels towards the right edge
+        for y in range(270, 300, 1):  # Check pixels towards the bottom edge
+            pixel_color = game_region.getpixel((x, y))  # Get the color of the pixel
+
+            # Detect if the pixel is dark (which could indicate an obstacle)
+            if pixel_color[0] < 100 and pixel_color[1] < 100 and pixel_color[2] < 100:  # RGB check for dark color
+                return True  # Return True if any dark pixel is found
+
+    return False  # Return False if no dark pixels are found
 
 def main():
+    webbrowser.open(URL)  
+    time.sleep(3)
+    pyautogui.press('space')  # Jump to start the game
+    while True:  # Keep running indefinitely
+        if is_obstacle_present():
+            print("Jump!")
+            pyautogui.press('space')  # Jump if an obstacle is detected
+        time.sleep(0.1)  # Adjust the sleep time as necessary
 
-  webbrowser.open(URL)  
-  time.sleep(3)
-  pyautogui.press('space')  # Jump if the obstacle is detected
-  while True:
-    if is_obstacle_present():
-      pyautogui.press('space')  # Jump if the obstacle is detected
-    time.sleep(0.1)
-  
 if __name__ == "__main__":
-  main()
+    main()
