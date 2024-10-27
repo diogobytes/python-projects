@@ -7,9 +7,10 @@ URL = "https://elgoog.im/dinosaur-game/"
 
 def is_obstacle_present():
     # Capture a screenshot of the game region
-    game_region = pyautogui.screenshot(region=(800, 550, 430, 300))
+    game_region = pyautogui.screenshot(region=(800, 350, 450, 300))
     # Convert the screenshot to a format we can manipulate (Pillow Image)
     game_region = game_region.convert('RGB')
+    game_region.show()
 
     # Check multiple pixels within the screenshot for color changes
     for x in range(420, 430, 1):  # Check pixels towards the right edge
@@ -26,11 +27,12 @@ def main():
     webbrowser.open(URL)  
     time.sleep(3)
     pyautogui.press('space')  # Jump to start the game
-    while True:  # Keep running indefinitely
+    n = 0
+    while n < 16:  # Keep running indefinitely
         if is_obstacle_present():
-            print("Jump!")
             pyautogui.press('space')  # Jump if an obstacle is detected
         time.sleep(0.1)  # Adjust the sleep time as necessary
+        n +=1
 
 if __name__ == "__main__":
     main()
